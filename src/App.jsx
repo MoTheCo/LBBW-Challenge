@@ -293,16 +293,16 @@ const T = {
     perMonthShort: '/ month',
     perFund: '/ committed',
     lbbwSignature: 'LBBW Impact Ecosystem',
-    quizEyebrows: ['PHASE 01 · YOUR PROFILE', 'PHASE 02 · YOUR STYLE', 'PHASE 03 · YOUR HORIZON'],
+    quizEyebrows: ['PHASE 01 · YOUR PROFILE', 'PHASE 02 · YOUR STYLE', 'PHASE 03 · YOUR JOURNEY'],
     quizQuestions: [
       'What motivates you to give?',
       'How much control do you want over where it goes?',
-      'What time horizon do you think in?',
+      'How do you see your giving journey unfolding?',
     ],
     quizOptions: [
       ['I want to help quickly and easily. Generosity on autopilot.', 'I want to shape a project from the start and see where every euro goes.', 'I want to create something that outlasts me. A lasting legacy.'],
       ['Trust the experts, as long as it works.', 'I want to co-decide which projects get funded.', 'I want to determine the entire strategy myself.'],
-      ['Month by month, stay flexible.', '3 to 5 years, pursue a concrete goal.', 'Generations, build something permanent.'],
+      ['Give a little each month, stay flexible and let it grow.', 'Commit to a cause for a few years and see it through.', 'Build something that carries your values beyond your lifetime.'],
     ],
     identityDesc: {
       catalyst: 'Generosity, on autopilot. You set your rule once and every card payment rounds up to the nearest euro. No budgeting, no friction.',
