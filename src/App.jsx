@@ -1978,7 +1978,7 @@ const App = () => {
   const [givingMode, setGivingMode] = useState('lumpsum')
   const [investmentAmount, setInvestmentAmount] = useState(100000)
   const [selectedCause, setSelectedCause] = useState(null)
-  const [lang, setLang] = useState('de')
+  const [lang, setLang] = useState('en')
 
   // Font injection
   useEffect(() => {
