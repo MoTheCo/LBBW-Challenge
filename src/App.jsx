@@ -218,6 +218,11 @@ const T = {
     building: 'Phase 2: Bau',
     testing: 'Phase 3: Test',
     operation: 'Phase 4: Betrieb',
+    phaseProjects: 'PHASE 04 · PROJEKTE',
+    phaseKnowledge: 'PHASE 05 · WISSEN',
+    phaseCalculator: 'PHASE 06 · RECHNER',
+    phaseRecommendation: 'PHASE 07 · EMPFEHLUNG',
+    phaseDashboard: 'PHASE 10 · AUSBLICK',
   },
   en: {
     philanthropyChallenge: 'Philanthropy Challenge · Pitch Demo',
@@ -228,6 +233,7 @@ const T = {
     splashSub: 'A live walkthrough of the LBBW Impact app for both audiences: the everyday Micro-Contributor who rounds up their morning coffee, and the Major Contributor deploying €100,000 into the world. Everything below is interactive.',
     microEntry: 'Group 1 · The Micro-Contributor',
     founderEntry: 'Group 2 · The Major Contributor',
+    hideArrows: true,
     startNow: 'Start now →',
     splashQuote: '"Today\'s Micro-Contributor is tomorrow\'s Major Contributor."',
     next: 'Next',
@@ -237,7 +243,7 @@ const T = {
     toProjects: 'Continue to projects →',
     discoverH: 'Choose your cause.',
     discoverH2: 'Where should your capital go?',
-    discoverSub: 'Pick the cause that moves you — or get inspired by what others are funding.',
+    discoverSub: 'Pick the cause that moves you, or get inspired by what others are funding.',
     all: 'All',
     educationH: 'What fits your path?',
     educationSub: 'Three paths, one goal: sustainable impact with your capital.',
@@ -260,13 +266,13 @@ const T = {
     shareProfile: 'Share profile',
     copied: 'Copied!',
     howLBBW: 'How LBBW benefits',
-    businessText: 'LBBW generates revenue through transparent management fees: 0.6% p.a. on managed foundation assets.\n\nFoundation fund €150,000 = €900/year management fee.\n\nLong-term: Clients starting with €100k today often manage €500k+ in 10–15 years. ImpactPath plants the LBBW flag at the earliest possible moment — building brand loyalty during the formative years of a philanthropic identity.',
+    businessText: 'LBBW generates revenue through transparent management fees: 0.6% p.a. on managed foundation assets.\n\nFoundation fund €150,000 = €900/year management fee.\n\nLong-term: Clients starting with €100k today often manage €500k+ in 10 to 15 years. ImpactPath plants the LBBW flag at the earliest possible moment, building brand loyalty during the formative years of a philanthropic identity.',
     toFinish: 'To the closing →',
     bookConsultation: 'Book consultation →',
     dashboardPreview: 'View dashboard preview →',
     yourWindow: 'Your time window',
     trustBadges: ['🏆 #1 Ranked · 2025', '🏛️ 40 yrs experience', '📊 1,500+ foundations'],
-    phase10H: 'The LBBW Impact App — Interactive Preview',
+    phase10H: 'The LBBW Impact App: Interactive Preview',
     phase10Sub: 'Two audiences, one ecosystem. See what the live experience looks like for the Micro-Contributor and the Major Contributor.',
     microGiverTrack: 'Group 1 · The Micro-Contributor',
     founderTrack: 'Group 2 · The Major Contributor',
@@ -286,7 +292,7 @@ const T = {
     back: 'Back',
     perMonthShort: '/ month',
     perFund: '/ committed',
-    lbbwSignature: '— LBBW Impact Ecosystem',
+    lbbwSignature: 'LBBW Impact Ecosystem',
     quizEyebrows: ['PHASE 01 · YOUR PROFILE', 'PHASE 02 · YOUR STYLE', 'PHASE 03 · YOUR HORIZON'],
     quizQuestions: [
       'What motivates you to give?',
@@ -294,13 +300,13 @@ const T = {
       'What time horizon do you think in?',
     ],
     quizOptions: [
-      ['I want to help quickly and easily — generosity on autopilot.', 'I want to shape a project from the start and see where every euro goes.', 'I want to create something that outlasts me — a lasting legacy.'],
-      ['Trust the experts — as long as it works.', 'I want to co-decide which projects get funded.', 'I want to determine the entire strategy myself.'],
-      ['Month by month — stay flexible.', '3–5 years — pursue a concrete goal.', 'Generations — build something permanent.'],
+      ['I want to help quickly and easily. Generosity on autopilot.', 'I want to shape a project from the start and see where every euro goes.', 'I want to create something that outlasts me. A lasting legacy.'],
+      ['Trust the experts, as long as it works.', 'I want to co-decide which projects get funded.', 'I want to determine the entire strategy myself.'],
+      ['Month by month, stay flexible.', '3 to 5 years, pursue a concrete goal.', 'Generations, build something permanent.'],
     ],
     identityDesc: {
       catalyst: 'Generosity, on autopilot. You set your rule once and every card payment rounds up to the nearest euro. No budgeting, no friction.',
-      builder: 'Your capital, made visible. You don\'t just give — you follow every euro as it becomes wells, water, and reach. Phase by phase, in real time.',
+      builder: 'Your capital, made visible. You don\'t just give. You follow every euro as it becomes wells, water, and reach. Phase by phase, in real time.',
       visionary: 'A legacy that outlasts you. You think in decades. Your commitment carries your name and shapes generations.',
     },
     identityTags: {
@@ -314,7 +320,7 @@ const T = {
       visionary: 'Dear Visionary,',
     },
     identityLetterOpener: {
-      catalyst: 'You\'ve proven that generosity doesn\'t require grand gestures. What you bring is consistency — the quiet force that compounds into real impact.',
+      catalyst: 'You\'ve proven that generosity doesn\'t require grand gestures. What you bring is consistency, the quiet force that compounds into real impact.',
       builder: 'You don\'t just give. You want to understand where your capital flows, follow the construction timeline, and see your impact in real time.',
       visionary: 'You think in decades. Impact is not born from a gesture, but from a structure that endures.',
     },
@@ -326,7 +332,7 @@ const T = {
     identityForward: {
       catalyst: 'Set your round-up rule, pick your cause, hit milestones, watch it add up. LBBW adds bonuses at every tier.',
       builder: 'Reserved for those who commit at least €100,000. Follow every euro of your committed goal as it becomes wells, water, and reach.',
-      visionary: 'A legally independent foundation in your name — LBBW accompanies you from founding to ongoing operations.',
+      visionary: 'A legally independent foundation in your name. LBBW accompanies you from founding to ongoing operations.',
     },
     identityNameDE: { catalyst: 'The Micro-Contributor', builder: 'The Major Contributor', visionary: 'The Visionary' },
     philanthropyNames: { fonds: 'Impact Ecosystem (Micro)', treuhand_classic: 'Impact Ecosystem (Major)', legal: 'Legal Foundation' },
@@ -335,7 +341,7 @@ const T = {
       fonds: [
         { bold: 'Set your rule once.', text: ' Round up to the next €1, €2 or €5. Adjust any time with the slider.' },
         { bold: 'Unlock LBBW bonuses.', text: ' Reach €100 and LBBW adds €1. At €200 they add €2.50, at €500 it\'s €6, at €1,000 it\'s €15.' },
-        { bold: 'Choose your cause.', text: ' Clean water, education, reforestation, or food security — you decide.' },
+        { bold: 'Choose your cause.', text: ' Clean water, education, reforestation, or food security. You decide.' },
       ],
       treuhand_classic: [
         { bold: 'Live project tracker.', text: ' Notifications on every milestone. Tap through to the construction timeline and deployment counter.' },
@@ -350,10 +356,10 @@ const T = {
     },
     projectNames: ['Clean Water Access', 'Girls\' Education', 'Reforestation', 'Food Security'],
     projectDescs: [
-      'Wells and filtration in East Africa — sustainable access to clean drinking water.',
-      'School access in rural communities — scholarships and infrastructure.',
-      'Tree planting across drought zones — restoring ecosystems at scale.',
-      'Local farming cooperatives — building food resilience from the ground up.',
+      'Wells and filtration in East Africa. Sustainable access to clean drinking water.',
+      'School access in rural communities. Scholarships and infrastructure.',
+      'Tree planting across drought zones. Restoring ecosystems at scale.',
+      'Local farming cooperatives. Building food resilience from the ground up.',
     ],
     projectImpacts: ['18 people per €240', '30 kids per €100/month', '1 solar pump per €500', '1 hectare per €60'],
     causes: ['Water', 'Education', 'Forest', 'Food'],
@@ -363,7 +369,7 @@ const T = {
     notOpen: 'Not yet defined',
     shareText: (nameDE, emoji, amount, cause, impact) =>
       `I am ${nameDE} ${emoji}\nMy capital: €${amount}\nFocus: ${cause || 'Not yet defined'}\nImpact: ~€${impact} / year\nPowered by LBBW ImpactPath`,
-    fundStarted: (name) => `Your Impact Ecosystem — Well Construction Phase 2 has started`,
+    fundStarted: (name) => `Your Impact Ecosystem: Well Construction Phase 2 has started`,
     regionalWater: 'Regional Water Initiative',
     fotwName: 'Lena Vogt',
     fotwDesc: '"The hardest part of giving well isn\'t the money. It\'s knowing whether it works. Building my Impact Ecosystem alongside others changed how I give."',
@@ -379,6 +385,11 @@ const T = {
     building: 'Phase 2 · Structural Drilling',
     testing: 'Phase 3 · Solar & Pump Install',
     operation: 'Phase 4 · First Water',
+    phaseProjects: 'PHASE 04 · PROJECTS',
+    phaseKnowledge: 'PHASE 05 · KNOWLEDGE',
+    phaseCalculator: 'PHASE 06 · CALCULATOR',
+    phaseRecommendation: 'PHASE 07 · RECOMMENDATION',
+    phaseDashboard: 'PHASE 10 · PREVIEW',
   },
 }
 
@@ -828,13 +839,11 @@ const SplashScreen = ({ onStart }) => {
           style={{ background: `${DS.teal}20`, border: `1px solid ${DS.teal}50`, color: DS.tealhi, fontSize: 13 }}>
           <span className="w-2 h-2 rounded-full" style={{ background: DS.tealhi }} />
           {t.microEntry}
-          <span>↓</span>
         </div>
         <div className="inline-flex items-center gap-3 rounded-full px-5 py-3 cursor-pointer"
           style={{ background: `${DS.gold}18`, border: `1px solid ${DS.gold}50`, color: DS.goldhi, fontSize: 13 }}>
           <span className="w-2 h-2 rounded-full" style={{ background: DS.goldhi }} />
           {t.founderEntry}
-          <span>↓</span>
         </div>
       </motion.div>
 
@@ -1053,7 +1062,7 @@ const ProjectDiscoveryScreen = ({ followedProjects, setFollowedProjects, selecte
       <motion.div className={C.pageWrap} {...pageTransition}>
         <div className="flex items-center justify-between mb-8">
           <LBBWBadge />
-          <Eyebrow text="PHASE 04 · PROJEKTE" color={id.trackColor} />
+          <Eyebrow text={t.phaseProjects} color={id.trackColor} />
         </div>
 
         <h2 style={{ fontFamily: 'Fraunces, Georgia, serif', fontWeight: 300, fontSize: 'clamp(28px, 8vw, 40px)', color: DS.paper, lineHeight: 1.15 }}
@@ -1154,7 +1163,7 @@ const EducationScreen = ({ identity, onNext, onBack }) => {
       <motion.div className={C.pageWrap} {...pageTransition}>
         <div className="flex items-center justify-between mb-8">
           <LBBWBadge />
-          <Eyebrow text="PHASE 05 · WISSEN" color={id.trackColor} />
+          <Eyebrow text={t.phaseKnowledge} color={id.trackColor} />
         </div>
 
         <h2 style={{ fontFamily: 'Fraunces, Georgia, serif', fontWeight: 300, fontSize: 'clamp(28px, 8vw, 40px)', color: DS.paper, lineHeight: 1.15 }}
@@ -1262,7 +1271,7 @@ const CalculatorScreen = ({ identity, investmentAmount, setInvestmentAmount, giv
       <motion.div className="max-w-4xl mx-auto px-4 py-8 relative z-10" {...pageTransition}>
         <div className="flex items-center justify-between mb-8">
           <LBBWBadge />
-          <Eyebrow text="PHASE 06 · RECHNER" color={id.trackColor} />
+          <Eyebrow text={t.phaseCalculator} color={id.trackColor} />
         </div>
 
         <h2 style={{ fontFamily: 'Fraunces, Georgia, serif', fontWeight: 300, fontSize: 'clamp(28px, 8vw, 40px)', color: DS.paper, lineHeight: 1.15 }}
@@ -1414,7 +1423,7 @@ const RecommendationScreen = ({ identity, investmentAmount, givingMode, selected
       <motion.div className={C.pageWrap} {...pageTransition}>
         <div className="flex items-center justify-between mb-8">
           <LBBWBadge />
-          <Eyebrow text="PHASE 07 · EMPFEHLUNG" color={id.trackColor} />
+          <Eyebrow text={t.phaseRecommendation} color={id.trackColor} />
         </div>
 
         <h2 style={{ fontFamily: 'Fraunces, Georgia, serif', fontWeight: 300, fontSize: 'clamp(28px, 8vw, 40px)', color: DS.paper, lineHeight: 1.15 }}
@@ -1679,7 +1688,7 @@ const DashboardRoadmapScreen = ({ identity, onBack }) => {
       <motion.div className="max-w-5xl mx-auto px-4 py-8 relative z-10" {...pageTransition}>
         <div className="flex items-center justify-between mb-8">
           <LBBWBadge />
-          <Eyebrow text="PHASE 10 · AUSBLICK" color={id.trackColor} />
+          <Eyebrow text={t.phaseDashboard} color={id.trackColor} />
         </div>
 
         <h2 style={{ fontFamily: 'Fraunces, Georgia, serif', fontWeight: 300, fontSize: 'clamp(28px, 8vw, 40px)', color: DS.paper, lineHeight: 1.15 }}
