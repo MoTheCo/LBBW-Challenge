@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import React, { useState, useEffect, useRef, useCallback, createContext, useContext } from 'react'
 import { motion, AnimatePresence, useAnimation } from 'framer-motion'
 import {
   Heart, HeartOff, ArrowRight, ArrowLeft, Check, ChevronDown, ChevronUp,
@@ -52,6 +52,334 @@ const C = {
   btnSmall: 'rounded-full border font-medium px-4 py-2 text-sm transition-all cursor-pointer',
   chip: 'rounded-full px-3 py-1 text-xs font-medium tracking-wide',
   chipGold: 'rounded-full px-4 py-1.5 text-xs font-medium tracking-wide border',
+}
+
+// ═══════════════════════════════════════════════════
+// I18N TRANSLATIONS
+// ═══════════════════════════════════════════════════
+const T = {
+  de: {
+    philanthropyChallenge: 'Philanthropy Challenge',
+    eyebrowFuture: 'The future of giving',
+    splashH1a: 'Zwei Wege.',
+    splashH1b: 'Ein',
+    splashH1c: 'Ökosystem der Wirkung.',
+    splashSub: 'Ein persönlicher Weg von deinem ersten flexiblen Euro bis zu deiner eigenen Stiftung. Komplett digital. Vollständig transparent.',
+    microEntry: 'Der Einsteiger · Ab €25/Monat',
+    founderEntry: 'Der Gründer · Ab €100.000',
+    startNow: 'Jetzt starten →',
+    splashQuote: '"Wirkung entsteht nicht durch eine Geste, sondern durch eine Struktur, die trägt."',
+    next: 'Weiter',
+    nextArrow: 'Weiter →',
+    selected: 'Ausgewählt',
+    analyzing: 'Analysiere dein Profil...',
+    toProjects: 'Weiter zu den Projekten →',
+    discoverH: 'Entdecke Projekte,',
+    discoverH2: 'die zu dir passen.',
+    discoverSub: 'Wähle einen Bereich, der dich bewegt – oder lass dich inspirieren.',
+    all: 'Alle',
+    educationH: 'Was passt zu deinem Weg?',
+    educationSub: 'Drei Wege, ein Ziel: nachhaltige Wirkung mit deinem Kapital.',
+    recommended: 'Empfohlen',
+    toCalculator: 'Zum Impact-Rechner →',
+    calcH: 'Berechne deine Wirkung.',
+    calcSub: 'Bewege den Regler und sieh, was dein Kapital bewirken kann.',
+    lumpsum: 'Einmalanlage',
+    monthly: 'Monatlich',
+    perMonth: 'pro Monat',
+    lumpsumLabel: 'Einmalanlage',
+    annualImpact: 'Jährliche Wirkung',
+    cumulativeImpact: 'Kumulierte Wirkung',
+    myRecommendation: 'Meine Empfehlung →',
+    recH: 'Dein persönlicher Plan.',
+    capital: 'Kapital',
+    annualImpactLabel: 'Jährliche Wirkung',
+    focus: 'Fokus',
+    recommendedLabel: 'Empfohlen',
+    shareProfile: 'Profil teilen',
+    copied: 'Kopiert!',
+    howLBBW: 'Wie LBBW profitiert',
+    businessText: 'LBBW generiert Einnahmen durch transparente Verwaltungsgebühren: 0,6% p.a. auf verwaltetes Stiftungsvermögen.\n\nStiftungsfonds €150.000 = €900 / Jahr Verwaltungsgebühr.\n\nLangfristig: Kunden, die heute mit €100k starten, verwalten in 10–15 Jahren oft €500k+. ImpactPath pflanzt den LBBW-Flag beim frühestmöglichen Zeitpunkt — und baut Markenloyalität in den formativen Jahren einer philanthropischen Identität.',
+    toFinish: 'Zum Abschluss →',
+    bookConsultation: 'Beratungsgespräch vereinbaren →',
+    dashboardPreview: 'Dashboard-Vorschau ansehen →',
+    yourWindow: 'Dein Zeitfenster',
+    trustBadges: ['🏆 Platz 1 · 2025', '🏛️ 40 J. Erfahrung', '📊 1.500+ Stiftungen'],
+    phase10H: 'Phase 2: Dein persönliches Impact-Dashboard',
+    phase10Sub: 'So könnte deine Wirkung aussehen — in Echtzeit, direkt in der LBBW App.',
+    microGiverTrack: 'Micro-Giver Track',
+    founderTrack: 'Founder Track',
+    collectedAmount: 'Gesammelter Betrag',
+    today: 'Heute',
+    roundupAmount: 'Round-up Betrag',
+    lastTransactions: 'LETZTE TRANSAKTIONEN',
+    milestoneReached: '€100 Meilenstein erreicht!',
+    milestoneDesc: 'Du hast dein erstes Ziel geschafft.',
+    donationGoal: '€250 Spendenziel',
+    firstProject: 'Erstes Projekt unterstützt',
+    communityJoin: 'Community Beitritt',
+    tapToFollow: 'Tippe zum Verfolgen',
+    deployed: 'Eingesetzt',
+    fotwTitle: 'Foundation of the Week',
+    devNote: 'Diese Features befinden sich in der gemeinsamen Entwicklung mit LBBW.',
+    back: 'Zurück',
+    perMonthShort: '/ Monat',
+    perFund: '/ Fund',
+    lbbwSignature: '— LBBW / BW-Bank',
+    quizEyebrows: ['PHASE 01 · DEIN PROFIL', 'PHASE 02 · DEIN STIL', 'PHASE 03 · DEIN HORIZONT'],
+    quizQuestions: [
+      'Was motiviert dich, gesellschaftlich aktiv zu werden?',
+      'Wie viel Kontrolle möchtest du über die Verwendung haben?',
+      'In welchem Zeitrahmen denkst du?',
+    ],
+    quizOptions: [
+      ['Ich möchte schnell und unkompliziert helfen.', 'Ich möchte ein Projekt von Anfang an mitgestalten.', 'Ich möchte etwas schaffen, das über mich hinaus Bestand hat.'],
+      ['Vertraue den Experten – Hauptsache, es wirkt.', 'Ich möchte mitentscheiden, welche Projekte gefördert werden.', 'Ich will die gesamte Strategie selbst bestimmen.'],
+      ['Monat für Monat – flexibel bleiben.', '3–5 Jahre – ein konkretes Ziel verfolgen.', 'Generationen – ein dauerhaftes Vermächtnis.'],
+    ],
+    identityDesc: {
+      catalyst: 'Du willst sofortige, spürbare Wirkung – ohne dich in Verwaltung zu verlieren. Flexibilität ist dein Prinzip.',
+      builder: 'Du willst nicht nur zahlen, sondern mitgestalten. Projekte aktiv begleiten, Netzwerke einbringen, echte Veränderung anstoßen.',
+      visionary: 'Du denkst in Jahrzehnten. Dein Engagement soll deinen Namen tragen und Generationen nach dir prägen.',
+    },
+    identityTags: {
+      catalyst: ['Flexibel', 'Schnell wirkend', 'Unkompliziert'],
+      builder: ['Gestaltend', 'Projektbezogen', 'Netzwerkorientiert'],
+      visionary: ['Langfristig', 'Eigenständig', 'Vermächtnisbildend'],
+    },
+    identityLetterSalutation: {
+      catalyst: 'Liebe Impulsgeberin, lieber Impulsgeber,',
+      builder: 'Liebe Gestalterin, lieber Gestalter,',
+      visionary: 'Liebe Visionärin, lieber Visionär,',
+    },
+    identityLetterOpener: {
+      catalyst: 'Du hast gelernt, den richtigen Moment selbst zu erschaffen. Was du mitbringst, ist mehr als Kapital — es ist die Haltung, die Wirkung erzeugt.',
+      builder: 'Du willst nicht nur geben. Du willst verstehen, wohin dein Kapital fließt — und mitentscheiden, was damit entsteht.',
+      visionary: 'Du denkst in Jahrzehnten. Wirkung entsteht nicht durch eine Geste, sondern durch eine Struktur, die trägt.',
+    },
+    identityClosing: {
+      catalyst: 'Du hast nicht gespendet.\nDu hast bewegt.',
+      builder: 'Du hast nicht gespendet.\nDu hast gegründet.',
+      visionary: 'Du hast nicht gespendet.\nDu hast ein Vermächtnis geschaffen.',
+    },
+    identityForward: {
+      catalyst: 'Starte mit deinem persönlichen Stiftungsfonds – ab €100.000, vollständig von LBBW verwaltet.',
+      builder: 'Deine Treuhandstiftung Classic kann innerhalb von 30 Tagen gegründet sein. LBBW übernimmt alles Administrative.',
+      visionary: 'Eine rechtsfähige Stiftung unter deinem Namen – LBBW begleitet dich von der Gründung bis zum laufenden Betrieb.',
+    },
+    identityNameDE: { catalyst: 'Der Impulsgeber', builder: 'Der Gestalter', visionary: 'Der Visionär' },
+    philanthropyNames: { fonds: 'Stiftungsfonds', treuhand_classic: 'Treuhandstiftung', legal: 'Rechtsfähige Stiftung' },
+    philanthropySubtitles: { fonds: 'Ab €100.000', treuhand_classic: 'Ab €100.000', legal: 'Ab €500.000' },
+    philanthropyBenefits: {
+      fonds: [
+        { bold: 'Kein Overhead.', text: ' LBBW verwaltet alles – du konzentrierst dich auf die Wirkung.' },
+        { bold: 'Sofort aktiv.', text: ' Dein Kapital wirkt vom ersten Tag an in geprüften Projekten.' },
+        { bold: 'Steueroptimiert.', text: ' Volle Spendenabzugsfähigkeit, professionell dokumentiert.' },
+      ],
+      treuhand_classic: [
+        { bold: 'Dein Name, deine Vision.', text: ' Die Stiftung trägt deinen Namen und deinen Zweck.' },
+        { bold: 'Mitgestaltung.', text: ' Du entscheidest mit, welche Projekte gefördert werden.' },
+        { bold: 'LBBW-Netzwerk.', text: ' Zugang zu exklusiven Philanthropie-Events und Partnerprojekten.' },
+      ],
+      legal: [
+        { bold: 'Volle Unabhängigkeit.', text: ' Eigene Rechtspersönlichkeit mit eigenem Vorstand.' },
+        { bold: 'Generationsübergreifend.', text: ' Dein Vermächtnis überdauert Generationen.' },
+        { bold: 'Maximale Gestaltungsfreiheit.', text: ' Eigene Satzung, eigene Strategie, eigenes Team.' },
+      ],
+    },
+    projectNames: ['Wasserprojekt Sahel', 'Bildung für Alle', 'Grüne Städte BW', 'Soziale Startups'],
+    projectDescs: [
+      'Nachhaltige Brunnen und Wasseraufbereitung in der Sahelzone.',
+      'Stipendienprogramme für benachteiligte Jugendliche in Baden-Württemberg.',
+      'Stadtbegrünung und urbane Gärten in der Region Stuttgart.',
+      'Inkubator für soziale Unternehmensgründungen mit LBBW-Mentoring.',
+    ],
+    projectImpacts: ['12.400 Menschen versorgt', '3.200 Stipendien vergeben', '48 Hektar begrünt', '67 Gründungen unterstützt'],
+    causes: ['Wasser', 'Bildung', 'Umwelt', 'Innovation'],
+    year: 'Jahr',
+    times12: '12× jährlich',
+    distribution: '2,5% LBBW-Ausschüttung',
+    notOpen: 'Noch offen',
+    shareText: (nameDE, emoji, amount, cause, impact) =>
+      `Ich bin ein ${nameDE} ${emoji}\nMein Kapital: €${amount}\nFokus: ${cause || 'Noch offen'}\nWirkung: ~€${impact} / Jahr\nPowered by LBBW ImpactPath`,
+    fundStarted: (name) => `${name} Fund — Bau-Phase 2 gestartet 🏗️`,
+    regionalWater: 'Regionale Wasserinitiative',
+    fotwName: 'Schneider Umweltstiftung',
+    fotwDesc: 'Die Schneider Stiftung fördert seit 2018 regionale Biodiversitätsprojekte. Exklusiv bei der LBBW Gala im Oktober vorgestellt.',
+    fotwCTA: 'Zur LBBW Gala einladen',
+    feedItems: [
+      { user: 'A. Weber', action: 'hat Wasserinitiative unterstützt', time: 'Vor 2h' },
+      { user: 'K. Schmidt', action: 'hat Bildungsfonds gegründet', time: 'Vor 1 Tag' },
+    ],
+    txNames: ['Edeka Round-up', 'dm Round-up', 'Tankstelle', 'Bäckerei'],
+    txTimes: ['Heute, 14:23', 'Gestern', 'Mo, 09:15', 'So, 08:40'],
+    friday: 'Freitag, 27. Juni',
+    planning: 'Phase 1: Planung',
+    building: 'Phase 2: Bau',
+    testing: 'Phase 3: Test',
+    operation: 'Phase 4: Betrieb',
+  },
+  en: {
+    philanthropyChallenge: 'Philanthropy Challenge',
+    eyebrowFuture: 'The future of giving',
+    splashH1a: 'Two journeys.',
+    splashH1b: 'One',
+    splashH1c: 'ecosystem of impact.',
+    splashSub: 'A personal path from your first flexible euro to your own foundation. Fully digital. Fully transparent.',
+    microEntry: 'The Starter · From €25/month',
+    founderEntry: 'The Founder · From €100,000',
+    startNow: 'Start now →',
+    splashQuote: '"Impact is not born from a gesture, but from a structure that endures."',
+    next: 'Next',
+    nextArrow: 'Next →',
+    selected: 'Selected',
+    analyzing: 'Analyzing your profile...',
+    toProjects: 'Continue to projects →',
+    discoverH: 'Discover projects',
+    discoverH2: 'that match you.',
+    discoverSub: 'Choose a cause that moves you — or get inspired.',
+    all: 'All',
+    educationH: 'What fits your path?',
+    educationSub: 'Three paths, one goal: sustainable impact with your capital.',
+    recommended: 'Recommended',
+    toCalculator: 'To the Impact Calculator →',
+    calcH: 'Calculate your impact.',
+    calcSub: 'Move the slider and see what your capital can achieve.',
+    lumpsum: 'Lump sum',
+    monthly: 'Monthly',
+    perMonth: 'per month',
+    lumpsumLabel: 'Lump sum',
+    annualImpact: 'Annual impact',
+    cumulativeImpact: 'Cumulative impact',
+    myRecommendation: 'My recommendation →',
+    recH: 'Your personal plan.',
+    capital: 'Capital',
+    annualImpactLabel: 'Annual impact',
+    focus: 'Focus',
+    recommendedLabel: 'Recommended',
+    shareProfile: 'Share profile',
+    copied: 'Copied!',
+    howLBBW: 'How LBBW benefits',
+    businessText: 'LBBW generates revenue through transparent management fees: 0.6% p.a. on managed foundation assets.\n\nFoundation fund €150,000 = €900/year management fee.\n\nLong-term: Clients starting with €100k today often manage €500k+ in 10–15 years. ImpactPath plants the LBBW flag at the earliest possible moment — building brand loyalty during the formative years of a philanthropic identity.',
+    toFinish: 'To the closing →',
+    bookConsultation: 'Book consultation →',
+    dashboardPreview: 'View dashboard preview →',
+    yourWindow: 'Your time window',
+    trustBadges: ['🏆 #1 Ranked · 2025', '🏛️ 40 yrs experience', '📊 1,500+ foundations'],
+    phase10H: 'Phase 2: Your personal Impact Dashboard',
+    phase10Sub: 'This is what your impact could look like — in real-time, directly in the LBBW app.',
+    microGiverTrack: 'Micro-Giver Track',
+    founderTrack: 'Founder Track',
+    collectedAmount: 'Total collected',
+    today: 'Today',
+    roundupAmount: 'Round-up amount',
+    lastTransactions: 'RECENT TRANSACTIONS',
+    milestoneReached: '€100 milestone reached!',
+    milestoneDesc: 'You reached your first goal.',
+    donationGoal: '€250 donation goal',
+    firstProject: 'First project supported',
+    communityJoin: 'Community joined',
+    tapToFollow: 'Tap to follow',
+    deployed: 'Deployed',
+    fotwTitle: 'Foundation of the Week',
+    devNote: 'These features are in joint development with LBBW.',
+    back: 'Back',
+    perMonthShort: '/ month',
+    perFund: '/ Fund',
+    lbbwSignature: '— LBBW / BW-Bank',
+    quizEyebrows: ['PHASE 01 · YOUR PROFILE', 'PHASE 02 · YOUR STYLE', 'PHASE 03 · YOUR HORIZON'],
+    quizQuestions: [
+      'What motivates you to get socially involved?',
+      'How much control do you want over the allocation?',
+      'What time horizon do you think in?',
+    ],
+    quizOptions: [
+      ['I want to help quickly and easily.', 'I want to shape a project from the start.', 'I want to create something that outlasts me.'],
+      ['Trust the experts — as long as it works.', 'I want to co-decide which projects get funded.', 'I want to determine the entire strategy myself.'],
+      ['Month by month — stay flexible.', '3–5 years — pursue a concrete goal.', 'Generations — a lasting legacy.'],
+    ],
+    identityDesc: {
+      catalyst: 'You want immediate, tangible impact — without getting lost in administration. Flexibility is your principle.',
+      builder: 'You don\'t just want to pay — you want to co-create. Actively accompany projects, leverage networks, drive real change.',
+      visionary: 'You think in decades. Your commitment should carry your name and shape generations after you.',
+    },
+    identityTags: {
+      catalyst: ['Flexible', 'Fast-acting', 'Simple'],
+      builder: ['Creative', 'Project-driven', 'Network-oriented'],
+      visionary: ['Long-term', 'Independent', 'Legacy-building'],
+    },
+    identityLetterSalutation: {
+      catalyst: 'Dear Catalyst,',
+      builder: 'Dear Builder,',
+      visionary: 'Dear Visionary,',
+    },
+    identityLetterOpener: {
+      catalyst: 'You\'ve learned to create the right moment yourself. What you bring is more than capital — it\'s the attitude that generates impact.',
+      builder: 'You don\'t just want to give. You want to understand where your capital flows — and co-decide what it creates.',
+      visionary: 'You think in decades. Impact is not born from a gesture, but from a structure that endures.',
+    },
+    identityClosing: {
+      catalyst: 'You didn\'t donate.\nYou moved.',
+      builder: 'You didn\'t donate.\nYou founded.',
+      visionary: 'You didn\'t donate.\nYou created a legacy.',
+    },
+    identityForward: {
+      catalyst: 'Start with your personal foundation fund — from €100,000, fully managed by LBBW.',
+      builder: 'Your Trust Foundation Classic can be established within 30 days. LBBW handles all administration.',
+      visionary: 'A legally independent foundation in your name — LBBW accompanies you from founding to ongoing operations.',
+    },
+    identityNameDE: { catalyst: 'The Catalyst', builder: 'The Builder', visionary: 'The Visionary' },
+    philanthropyNames: { fonds: 'Foundation Fund', treuhand_classic: 'Trust Foundation', legal: 'Legal Foundation' },
+    philanthropySubtitles: { fonds: 'From €100,000', treuhand_classic: 'From €100,000', legal: 'From €500,000' },
+    philanthropyBenefits: {
+      fonds: [
+        { bold: 'Zero overhead.', text: ' LBBW manages everything — you focus on impact.' },
+        { bold: 'Immediately active.', text: ' Your capital works from day one in vetted projects.' },
+        { bold: 'Tax-optimized.', text: ' Full tax deductibility, professionally documented.' },
+      ],
+      treuhand_classic: [
+        { bold: 'Your name, your vision.', text: ' The foundation carries your name and purpose.' },
+        { bold: 'Co-creation.', text: ' You co-decide which projects get funded.' },
+        { bold: 'LBBW network.', text: ' Access to exclusive philanthropy events and partner projects.' },
+      ],
+      legal: [
+        { bold: 'Full independence.', text: ' Own legal entity with its own board.' },
+        { bold: 'Cross-generational.', text: ' Your legacy outlasts generations.' },
+        { bold: 'Maximum creative freedom.', text: ' Own charter, own strategy, own team.' },
+      ],
+    },
+    projectNames: ['Water Project Sahel', 'Education for All', 'Green Cities BW', 'Social Startups'],
+    projectDescs: [
+      'Sustainable wells and water treatment in the Sahel zone.',
+      'Scholarship programs for disadvantaged youth in Baden-Württemberg.',
+      'Urban greening and community gardens in the Stuttgart region.',
+      'Incubator for social enterprises with LBBW mentoring.',
+    ],
+    projectImpacts: ['12,400 people supplied', '3,200 scholarships awarded', '48 hectares greened', '67 startups supported'],
+    causes: ['Water', 'Education', 'Environment', 'Innovation'],
+    year: 'Year',
+    times12: '12× annually',
+    distribution: '2.5% LBBW distribution',
+    notOpen: 'Not yet defined',
+    shareText: (nameDE, emoji, amount, cause, impact) =>
+      `I am a ${nameDE} ${emoji}\nMy capital: €${amount}\nFocus: ${cause || 'Not yet defined'}\nImpact: ~€${impact} / year\nPowered by LBBW ImpactPath`,
+    fundStarted: (name) => `${name} Fund — Build Phase 2 started 🏗️`,
+    regionalWater: 'Regional Water Initiative',
+    fotwName: 'Schneider Environmental Foundation',
+    fotwDesc: 'The Schneider Foundation has been promoting regional biodiversity projects since 2018. Exclusively presented at the LBBW Gala in October.',
+    fotwCTA: 'Invite to LBBW Gala',
+    feedItems: [
+      { user: 'A. Weber', action: 'supported Water Initiative', time: '2h ago' },
+      { user: 'K. Schmidt', action: 'founded Education Fund', time: '1 day ago' },
+    ],
+    txNames: ['Edeka Round-up', 'dm Round-up', 'Gas station', 'Bakery'],
+    txTimes: ['Today, 2:23 PM', 'Yesterday', 'Mon, 9:15 AM', 'Sun, 8:40 AM'],
+    friday: 'Friday, June 27',
+    planning: 'Phase 1: Planning',
+    building: 'Phase 2: Build',
+    testing: 'Phase 3: Testing',
+    operation: 'Phase 4: Operations',
+  },
 }
 
 // ═══════════════════════════════════════════════════
@@ -203,6 +531,29 @@ const generateShareText = (identity, amount, cause, annualImpact) => {
   const id = IDENTITY_DATA[identity]
   return `Ich bin ein ${id.nameDE} ${id.emoji}\nMein Kapital: €${formatEuro(amount)}\nFokus: ${cause || 'Noch offen'}\nWirkung: ~€${formatEuro(annualImpact)} / Jahr\nPowered by LBBW ImpactPath`
 }
+
+// ═══════════════════════════════════════════════════
+// LANGUAGE CONTEXT
+// ═══════════════════════════════════════════════════
+const LangContext = createContext('de')
+const useLang = () => useContext(LangContext)
+const useT = () => { const lang = useLang(); return T[lang] }
+
+const LangSwitch = ({ lang, setLang }) => (
+  <motion.button
+    onClick={() => setLang(lang === 'de' ? 'en' : 'de')}
+    className="fixed top-4 right-4 z-50 rounded-full px-3 py-1.5 text-xs font-semibold tracking-wide cursor-pointer backdrop-blur-md"
+    style={{
+      background: 'rgba(11,42,58,.7)',
+      border: `1px solid ${DS.sand}25`,
+      color: DS.sand,
+    }}
+    whileHover={{ scale: 1.05 }}
+    whileTap={{ scale: 0.95 }}
+  >
+    {lang === 'de' ? '🇬🇧 EN' : '🇩🇪 DE'}
+  </motion.button>
+)
 
 // ═══════════════════════════════════════════════════
 // SHARED UI COMPONENTS
@@ -440,33 +791,35 @@ const PhoneSVGScene = () => (
 // ═══════════════════════════════════════════════════
 // SCREEN 0: SPLASH
 // ═══════════════════════════════════════════════════
-const SplashScreen = ({ onStart }) => (
+const SplashScreen = ({ onStart }) => {
+  const t = useT()
+  return (
   <ScreenWrapper gradient={DS.grad.splash}>
     <motion.div className={C.pageWrap} {...pageTransition}>
       <div className="flex items-center justify-between mb-20">
         <LBBWBadge />
         <div style={{ fontSize: 11, letterSpacing: '.22em', color: `${DS.sand}70`, textTransform: 'uppercase' }}>
-          Philanthropy Challenge
+          {t.philanthropyChallenge}
         </div>
       </div>
 
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-        <Eyebrow text="The future of giving" />
+        <Eyebrow text={t.eyebrowFuture} />
       </motion.div>
 
       <motion.h1
         style={{ fontFamily: 'Fraunces, Georgia, serif', fontWeight: 300, fontSize: 'clamp(36px, 10vw, 56px)', lineHeight: 1.05, color: DS.paper }}
         initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
       >
-        Zwei Wege.<br />
-        <span style={{ fontStyle: 'italic', color: DS.teal }}>Ein</span> Ökosystem der Wirkung.
+        {t.splashH1a}<br />
+        <span style={{ fontStyle: 'italic', color: DS.teal }}>{t.splashH1b}</span> {t.splashH1c}
       </motion.h1>
 
       <motion.p
         className="mt-6 mb-10" style={{ fontSize: 16, color: `${DS.sand}b3`, lineHeight: 1.6, maxWidth: 480 }}
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.45 }}
       >
-        Ein persönlicher Weg von deinem ersten flexiblen Euro bis zu deiner eigenen Stiftung. Komplett digital. Vollständig transparent.
+        {t.splashSub}
       </motion.p>
 
       <motion.div className="flex flex-col sm:flex-row gap-3 mb-8"
@@ -474,13 +827,13 @@ const SplashScreen = ({ onStart }) => (
         <div className="inline-flex items-center gap-3 rounded-full px-5 py-3 cursor-pointer"
           style={{ background: `${DS.teal}20`, border: `1px solid ${DS.teal}50`, color: DS.tealhi, fontSize: 13 }}>
           <span className="w-2 h-2 rounded-full" style={{ background: DS.tealhi }} />
-          Der Einsteiger · Ab €25/Monat
+          {t.microEntry}
           <span>↓</span>
         </div>
         <div className="inline-flex items-center gap-3 rounded-full px-5 py-3 cursor-pointer"
           style={{ background: `${DS.gold}18`, border: `1px solid ${DS.gold}50`, color: DS.goldhi, fontSize: 13 }}>
           <span className="w-2 h-2 rounded-full" style={{ background: DS.goldhi }} />
-          Der Gründer · Ab €100.000
+          {t.founderEntry}
           <span>↓</span>
         </div>
       </motion.div>
@@ -492,26 +845,29 @@ const SplashScreen = ({ onStart }) => (
         whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
         initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.65 }}
       >
-        Jetzt starten →
+        {t.startNow}
       </motion.button>
 
       <motion.p
         className="mt-16" style={{ fontFamily: 'Fraunces, Georgia, serif', fontStyle: 'italic', fontSize: 15, color: `${DS.sand}66`, maxWidth: 400 }}
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.85 }}
       >
-        "Wirkung entsteht nicht durch eine Geste, sondern durch eine Struktur, die trägt."
+        {t.splashQuote}
       </motion.p>
     </motion.div>
   </ScreenWrapper>
-)
+  )
+}
 
 // ═══════════════════════════════════════════════════
 // SCREEN 1-3: QUIZ
 // ═══════════════════════════════════════════════════
-const QuizScreen = ({ data, answer, onAnswer, onNext, onBack, stepIndex }) => (
+const QuizScreen = ({ data, answer, onAnswer, onNext, onBack, stepIndex }) => {
+  const t = useT()
+  const qIdx = data.phase - 1
+  return (
   <ScreenWrapper>
     <motion.div className={C.pageWrap} {...pageTransition} key={`quiz-${data.phase}`}>
-      {/* Phase watermark */}
       <div className="absolute top-8 right-8 font-display text-8xl font-light pointer-events-none select-none"
         style={{ fontFamily: 'Fraunces, Georgia, serif', color: `${DS.paper}0d`, zIndex: 0 }}>
         0{data.phase}
@@ -527,11 +883,11 @@ const QuizScreen = ({ data, answer, onAnswer, onNext, onBack, stepIndex }) => (
         </div>
       </div>
 
-      <Eyebrow text={data.eyebrow} color={DS.teal} />
+      <Eyebrow text={t.quizEyebrows[qIdx]} color={DS.teal} />
 
       <h2 style={{ fontFamily: 'Fraunces, Georgia, serif', fontWeight: 300, fontSize: 'clamp(26px, 7vw, 38px)', lineHeight: 1.15, color: DS.paper }}
         className="mb-10">
-        {data.question}
+        {t.quizQuestions[qIdx]}
       </h2>
 
       <div className="space-y-4 mb-12">
@@ -552,7 +908,7 @@ const QuizScreen = ({ data, answer, onAnswer, onNext, onBack, stepIndex }) => (
               transition={{ delay: i * 0.08 }}
             >
               <div className="flex justify-between items-start">
-                <p style={{ color: DS.paper, fontSize: 15, lineHeight: 1.5, paddingRight: 16 }}>{opt.text}</p>
+                <p style={{ color: DS.paper, fontSize: 15, lineHeight: 1.5, paddingRight: 16 }}>{t.quizOptions[qIdx][i]}</p>
                 <span style={{ fontFamily: 'monospace', fontSize: 11, color: `${DS.gold}66` }}>
                   0{i + 1}
                 </span>
@@ -561,7 +917,7 @@ const QuizScreen = ({ data, answer, onAnswer, onNext, onBack, stepIndex }) => (
                 <motion.div className="mt-3 flex items-center gap-2"
                   initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}>
                   <Check size={14} style={{ color: DS.tealhi }} />
-                  <span style={{ color: DS.tealhi, fontSize: 12 }}>Ausgewählt</span>
+                  <span style={{ color: DS.tealhi, fontSize: 12 }}>{t.selected}</span>
                 </motion.div>
               )}
             </motion.button>
@@ -583,12 +939,13 @@ const QuizScreen = ({ data, answer, onAnswer, onNext, onBack, stepIndex }) => (
           onClick={onNext}
           whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
         >
-          Weiter <ArrowRight size={16} />
+          {t.next} <ArrowRight size={16} />
         </motion.button>
       </div>
     </motion.div>
   </ScreenWrapper>
-)
+  )
+}
 
 // ═══════════════════════════════════════════════════
 // SCREEN 4: IDENTITY REVEAL
@@ -596,6 +953,7 @@ const QuizScreen = ({ data, answer, onAnswer, onNext, onBack, stepIndex }) => (
 const IdentityRevealScreen = ({ identity, onNext }) => {
   const [phase, setPhase] = useState(0)
   const id = IDENTITY_DATA[identity]
+  const t = useT()
 
   useEffect(() => {
     const t1 = setTimeout(() => setPhase(1), 1500)
@@ -614,7 +972,7 @@ const IdentityRevealScreen = ({ identity, onNext }) => {
               animate={{ rotate: 360 }}
               transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
             />
-            <p style={{ color: `${DS.sand}99`, fontSize: 14, letterSpacing: '.1em' }}>Analysiere dein Profil...</p>
+            <p style={{ color: `${DS.sand}99`, fontSize: 14, letterSpacing: '.1em' }}>{t.analyzing}</p>
           </motion.div>
         )}
 
@@ -631,11 +989,11 @@ const IdentityRevealScreen = ({ identity, onNext }) => {
         {phase >= 2 && (
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
             <h1 style={{ fontFamily: 'Fraunces, Georgia, serif', fontSize: 'clamp(36px, 10vw, 56px)', fontWeight: 300, color: id.trackColor, lineHeight: 1.1 }}>
-              {id.nameDE}
+              {t.identityNameDE[identity]}
             </h1>
             <p className="mt-2" style={{ color: `${DS.sand}66`, fontSize: 14 }}>{id.name}</p>
             <div className="flex gap-2 justify-center mt-6 flex-wrap">
-              {id.tags.map((tag, i) => (
+              {t.identityTags[identity].map((tag, i) => (
                 <motion.span key={tag} className={C.chip}
                   style={{ background: `${id.trackColor}20`, color: id.trackHi, border: `1px solid ${id.trackColor}40` }}
                   initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
@@ -659,20 +1017,20 @@ const IdentityRevealScreen = ({ identity, onNext }) => {
                 boxShadow: `0 12px 30px -12px rgba(0,0,0,.6)`,
               }}>
               <p className="mb-3" style={{ fontFamily: 'Fraunces, Georgia, serif', fontStyle: 'italic', color: `${DS.paper}e6`, fontSize: 14 }}>
-                {id.letterSalutation}
+                {t.identityLetterSalutation[identity]}
               </p>
               <p style={{ color: `${DS.sand}99`, fontSize: 13, lineHeight: 1.7 }}>
-                {id.letterOpener}
+                {t.identityLetterOpener[identity]}
               </p>
               <GoldeneLine color={id.trackColor} delay={0.3} />
-              <p style={{ color: `${DS.sand}66`, fontSize: 12 }}>{id.desc}</p>
+              <p style={{ color: `${DS.sand}66`, fontSize: 12 }}>{t.identityDesc[identity]}</p>
             </div>
 
             <motion.button className={C.btnPrimary + ' w-full mt-8'}
               style={{ background: id.trackColor, color: DS.ink }}
               onClick={onNext}
               whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
-              Weiter zu den Projekten →
+              {t.toProjects}
             </motion.button>
           </motion.div>
         )}
@@ -686,6 +1044,7 @@ const IdentityRevealScreen = ({ identity, onNext }) => {
 // ═══════════════════════════════════════════════════
 const ProjectDiscoveryScreen = ({ followedProjects, setFollowedProjects, selectedCause, setSelectedCause, onNext, onBack, identity }) => {
   const id = IDENTITY_DATA[identity]
+  const t = useT()
   const toggleFollow = (pid) => {
     setFollowedProjects(prev => prev.includes(pid) ? prev.filter(x => x !== pid) : [...prev, pid])
   }
@@ -699,29 +1058,30 @@ const ProjectDiscoveryScreen = ({ followedProjects, setFollowedProjects, selecte
 
         <h2 style={{ fontFamily: 'Fraunces, Georgia, serif', fontWeight: 300, fontSize: 'clamp(28px, 8vw, 40px)', color: DS.paper, lineHeight: 1.15 }}
           className="mb-3">
-          Entdecke Projekte,<br />die zu dir passen.
+          {t.discoverH}<br />{t.discoverH2}
         </h2>
         <p className="mb-8" style={{ color: `${DS.sand}99`, fontSize: 14 }}>
-          Wähle einen Bereich, der dich bewegt – oder lass dich inspirieren.
+          {t.discoverSub}
         </p>
 
         {/* Cause filter chips */}
         <div className="flex gap-2 mb-8 flex-wrap">
-          {['Alle', 'Wasser', 'Bildung', 'Umwelt', 'Innovation'].map(c => (
+          {[t.all, ...t.causes].map(c => (
             <button key={c}
               className={C.chip + ' cursor-pointer transition-all'}
               style={{
-                background: (selectedCause === c || (c === 'Alle' && !selectedCause)) ? `${id.trackColor}30` : `${DS.sand}10`,
-                color: (selectedCause === c || (c === 'Alle' && !selectedCause)) ? id.trackHi : `${DS.sand}80`,
-                border: `1px solid ${(selectedCause === c || (c === 'Alle' && !selectedCause)) ? id.trackColor + '60' : DS.sand + '20'}`,
+                background: (selectedCause === c || (c === t.all && !selectedCause)) ? `${id.trackColor}30` : `${DS.sand}10`,
+                color: (selectedCause === c || (c === t.all && !selectedCause)) ? id.trackHi : `${DS.sand}80`,
+                border: `1px solid ${(selectedCause === c || (c === t.all && !selectedCause)) ? id.trackColor + '60' : DS.sand + '20'}`,
               }}
-              onClick={() => setSelectedCause(c === 'Alle' ? null : c)}
+              onClick={() => setSelectedCause(c === t.all ? null : c)}
             >{c}</button>
           ))}
         </div>
 
         <div className="space-y-4 mb-10">
-          {PROJECTS.filter(p => !selectedCause || p.cause === selectedCause).map((project, i) => {
+          {PROJECTS.filter(p => !selectedCause || t.causes[['Wasser','Bildung','Umwelt','Innovation'].indexOf(p.cause)] === selectedCause).map((project, i) => {
+            const pIdx = PROJECTS.indexOf(project)
             const followed = followedProjects.includes(project.id)
             const Icon = project.icon
             return (
@@ -741,7 +1101,7 @@ const ProjectDiscoveryScreen = ({ followedProjects, setFollowedProjects, selecte
                       <div style={{ fontSize: 10, letterSpacing: '.2em', color: `${DS.sand}60`, textTransform: 'uppercase' }}>
                         {project.org}
                       </div>
-                      <div style={{ color: DS.paper, fontWeight: 600, fontSize: 15 }}>{project.name}</div>
+                      <div style={{ color: DS.paper, fontWeight: 600, fontSize: 15 }}>{t.projectNames[pIdx]}</div>
                     </div>
                   </div>
                   <button onClick={() => toggleFollow(project.id)} className="cursor-pointer"
@@ -752,10 +1112,10 @@ const ProjectDiscoveryScreen = ({ followedProjects, setFollowedProjects, selecte
                     }
                   </button>
                 </div>
-                <p style={{ color: `${DS.sand}80`, fontSize: 13, lineHeight: 1.6 }}>{project.desc}</p>
+                <p style={{ color: `${DS.sand}80`, fontSize: 13, lineHeight: 1.6 }}>{t.projectDescs[pIdx]}</p>
                 <div className="mt-3">
                   <span className={C.chip} style={{ background: `${project.trackColor}20`, color: project.trackColor }}>
-                    {project.impact}
+                    {t.projectImpacts[pIdx]}
                   </span>
                 </div>
               </motion.div>
@@ -786,6 +1146,7 @@ const ProjectDiscoveryScreen = ({ followedProjects, setFollowedProjects, selecte
 // ═══════════════════════════════════════════════════
 const EducationScreen = ({ identity, onNext, onBack }) => {
   const id = IDENTITY_DATA[identity]
+  const t = useT()
   const [openCard, setOpenCard] = useState(null)
 
   return (
@@ -798,10 +1159,10 @@ const EducationScreen = ({ identity, onNext, onBack }) => {
 
         <h2 style={{ fontFamily: 'Fraunces, Georgia, serif', fontWeight: 300, fontSize: 'clamp(28px, 8vw, 40px)', color: DS.paper, lineHeight: 1.15 }}
           className="mb-3">
-          Was passt zu deinem Weg?
+          {t.educationH}
         </h2>
         <p className="mb-10" style={{ color: `${DS.sand}99`, fontSize: 14 }}>
-          Drei Wege, ein Ziel: nachhaltige Wirkung mit deinem Kapital.
+          {t.educationSub}
         </p>
 
         <div className="space-y-4 mb-10">
@@ -822,14 +1183,14 @@ const EducationScreen = ({ identity, onNext, onBack }) => {
                   onClick={() => setOpenCard(isOpen ? null : type.id)}>
                   <div>
                     <div className="flex items-center gap-2 mb-1">
-                      <span style={{ color: DS.paper, fontWeight: 600, fontSize: 16 }}>{type.name}</span>
+                      <span style={{ color: DS.paper, fontWeight: 600, fontSize: 16 }}>{t.philanthropyNames[type.id]}</span>
                       {isMatch && (
                         <span className={C.chip} style={{ background: `${type.color}25`, color: type.colorHi, fontSize: 10 }}>
-                          Empfohlen
+                          {t.recommended}
                         </span>
                       )}
                     </div>
-                    <span style={{ color: `${DS.sand}66`, fontSize: 13 }}>{type.subtitle}</span>
+                    <span style={{ color: `${DS.sand}66`, fontSize: 13 }}>{t.philanthropySubtitles[type.id]}</span>
                   </div>
                   <motion.div animate={{ rotate: isOpen ? 180 : 0 }}>
                     <ChevronDown size={18} style={{ color: `${DS.sand}66` }} />
@@ -847,7 +1208,7 @@ const EducationScreen = ({ identity, onNext, onBack }) => {
                     >
                       <div className="px-5 pb-5">
                         <ul className="list-none p-0 m-0">
-                          {type.benefits.map((b, i) => (
+                          {t.philanthropyBenefits[type.id].map((b, i) => (
                             <FeatureListItem key={i} bold={b.bold} text={b.text} color={type.color} colorHi={type.colorHi} />
                           ))}
                         </ul>
@@ -870,7 +1231,7 @@ const EducationScreen = ({ identity, onNext, onBack }) => {
             style={{ background: id.trackColor, color: DS.ink }}
             onClick={onNext}
             whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
-            Zum Impact-Rechner →
+            {t.toCalculator}
           </motion.button>
         </div>
       </motion.div>
@@ -883,16 +1244,17 @@ const EducationScreen = ({ identity, onNext, onBack }) => {
 // ═══════════════════════════════════════════════════
 const CalculatorScreen = ({ identity, investmentAmount, setInvestmentAmount, givingMode, setGivingMode, onNext, onBack }) => {
   const id = IDENTITY_DATA[identity]
+  const t = useT()
   const annualImpact = getAnnualImpact(investmentAmount, givingMode)
   const sliderPercent = givingMode === 'monthly'
     ? ((investmentAmount - 25) / (500 - 25)) * 100
     : ((investmentAmount - 50000) / (1000000 - 50000)) * 100
 
   const chartData = [
-    { year: 'Jahr 1', value: annualImpact },
-    { year: 'Jahr 3', value: annualImpact * 3.2 },
-    { year: 'Jahr 5', value: annualImpact * 5.8 },
-    { year: 'Jahr 10', value: annualImpact * 12.5 },
+    { year: `${t.year} 1`, value: annualImpact },
+    { year: `${t.year} 3`, value: annualImpact * 3.2 },
+    { year: `${t.year} 5`, value: annualImpact * 5.8 },
+    { year: `${t.year} 10`, value: annualImpact * 12.5 },
   ]
 
   return (
@@ -905,10 +1267,10 @@ const CalculatorScreen = ({ identity, investmentAmount, setInvestmentAmount, giv
 
         <h2 style={{ fontFamily: 'Fraunces, Georgia, serif', fontWeight: 300, fontSize: 'clamp(28px, 8vw, 40px)', color: DS.paper, lineHeight: 1.15 }}
           className="mb-3">
-          Berechne deine Wirkung.
+          {t.calcH}
         </h2>
         <p className="mb-10" style={{ color: `${DS.sand}99`, fontSize: 14 }}>
-          Bewege den Regler und sieh, was dein Kapital bewirken kann.
+          {t.calcSub}
         </p>
 
         <div className="md:grid md:grid-cols-2 md:gap-8">
@@ -916,7 +1278,7 @@ const CalculatorScreen = ({ identity, investmentAmount, setInvestmentAmount, giv
           <div>
             {/* Mode toggle */}
             <div className="flex gap-2 mb-8">
-              {[['lumpsum', 'Einmalanlage'], ['monthly', 'Monatlich']].map(([m, label]) => (
+              {[['lumpsum', t.lumpsum], ['monthly', t.monthly]].map(([m, label]) => (
                 <button key={m} className={C.btnSmall + ' cursor-pointer'}
                   style={{
                     background: givingMode === m ? `${id.trackColor}25` : 'transparent',
@@ -937,7 +1299,7 @@ const CalculatorScreen = ({ identity, investmentAmount, setInvestmentAmount, giv
                 €{formatEuro(investmentAmount)}
               </div>
               <div style={{ color: `${DS.sand}66`, fontSize: 13 }}>
-                {givingMode === 'monthly' ? 'pro Monat' : 'Einmalanlage'}
+                {givingMode === 'monthly' ? t.perMonth : t.lumpsumLabel}
               </div>
             </div>
 
@@ -968,23 +1330,23 @@ const CalculatorScreen = ({ identity, investmentAmount, setInvestmentAmount, giv
                 position: 'absolute', right: -24, top: -32, width: 128, height: 128,
                 borderRadius: '50%', background: `${DS.tealhi}20`, filter: 'blur(32px)',
               }} />
-              <div style={{ fontSize: 11, letterSpacing: '.1em', color: `${DS.sand}b3` }}>Jährliche Wirkung</div>
+              <div style={{ fontSize: 11, letterSpacing: '.1em', color: `${DS.sand}b3` }}>{t.annualImpact}</div>
               <div style={{ fontFamily: 'Fraunces, Georgia, serif', fontSize: 40, color: DS.paper, marginTop: 4 }}>
                 €{formatEuro(annualImpact)}
               </div>
               <div className="mt-3 flex items-center gap-2 flex-wrap">
                 <span className="rounded-full px-3 py-0.5" style={{ background: `${DS.tealhi}25`, fontSize: 11, color: DS.tealhi }}>
-                  +{id.nameDE}
+                  +{t.identityNameDE[identity]}
                 </span>
                 <span style={{ color: `${DS.sand}99`, fontSize: 11 }}>
-                  · {givingMode === 'monthly' ? '12× jährlich' : '2,5% LBBW-Ausschüttung'}
+                  · {givingMode === 'monthly' ? t.times12 : t.distribution}
                 </span>
               </div>
             </div>
 
             {/* Chart */}
             <div className="rounded-2xl p-4" style={{ background: 'rgba(11,42,58,.5)', border: '1px solid rgba(255,255,255,.06)' }}>
-              <div className="mb-3" style={{ color: `${DS.sand}80`, fontSize: 12, fontWeight: 600 }}>Kumulierte Wirkung</div>
+              <div className="mb-3" style={{ color: `${DS.sand}80`, fontSize: 12, fontWeight: 600 }}>{t.cumulativeImpact}</div>
               <ResponsiveContainer width="100%" height={180}>
                 <BarChart data={chartData}>
                   <XAxis dataKey="year" tick={{ fill: `${DS.sand}80`, fontSize: 11 }} axisLine={false} tickLine={false} />
@@ -1019,7 +1381,7 @@ const CalculatorScreen = ({ identity, investmentAmount, setInvestmentAmount, giv
             style={{ background: id.trackColor, color: DS.ink }}
             onClick={onNext}
             whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
-            Meine Empfehlung →
+            {t.myRecommendation}
           </motion.button>
         </div>
       </motion.div>
@@ -1032,13 +1394,14 @@ const CalculatorScreen = ({ identity, investmentAmount, setInvestmentAmount, giv
 // ═══════════════════════════════════════════════════
 const RecommendationScreen = ({ identity, investmentAmount, givingMode, selectedCause, followedProjects, onNext, onBack }) => {
   const id = IDENTITY_DATA[identity]
+  const t = useT()
   const annualImpact = getAnnualImpact(investmentAmount, givingMode)
   const product = PHILANTHROPY_TYPES.find(p => p.id === id.recommendedProduct)
   const [showBusiness, setShowBusiness] = useState(false)
   const [copied, setCopied] = useState(false)
 
   const handleShare = async () => {
-    const text = generateShareText(identity, investmentAmount, selectedCause, annualImpact)
+    const text = t.shareText(t.identityNameDE[identity], id.emoji, formatEuro(investmentAmount), selectedCause, formatEuro(annualImpact))
     try {
       await navigator.clipboard.writeText(text)
       setCopied(true)
@@ -1056,7 +1419,7 @@ const RecommendationScreen = ({ identity, investmentAmount, givingMode, selected
 
         <h2 style={{ fontFamily: 'Fraunces, Georgia, serif', fontWeight: 300, fontSize: 'clamp(28px, 8vw, 40px)', color: DS.paper, lineHeight: 1.15 }}
           className="mb-8">
-          Dein persönlicher Plan.
+          {t.recH}
         </h2>
 
         {/* Profile summary card */}
@@ -1069,24 +1432,24 @@ const RecommendationScreen = ({ identity, investmentAmount, givingMode, selected
           <div className="flex items-center gap-4 mb-4">
             <span className="text-3xl">{id.emoji}</span>
             <div>
-              <div style={{ fontFamily: 'Fraunces, Georgia, serif', fontSize: 22, color: id.trackColor }}>{id.nameDE}</div>
+              <div style={{ fontFamily: 'Fraunces, Georgia, serif', fontSize: 22, color: id.trackColor }}>{t.identityNameDE[identity]}</div>
               <div style={{ color: `${DS.sand}66`, fontSize: 12 }}>{id.name}</div>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4 mt-4">
             <div>
-              <div style={{ color: `${DS.sand}60`, fontSize: 11 }}>Kapital</div>
+              <div style={{ color: `${DS.sand}60`, fontSize: 11 }}>{t.capital}</div>
               <div style={{ fontFamily: 'Fraunces, Georgia, serif', fontSize: 24, color: DS.paper }}>€{formatEuro(investmentAmount)}</div>
             </div>
             <div>
-              <div style={{ color: `${DS.sand}60`, fontSize: 11 }}>Jährliche Wirkung</div>
+              <div style={{ color: `${DS.sand}60`, fontSize: 11 }}>{t.annualImpactLabel}</div>
               <div style={{ fontFamily: 'Fraunces, Georgia, serif', fontSize: 24, color: DS.paper }}>€{formatEuro(annualImpact)}</div>
             </div>
           </div>
           {selectedCause && (
             <div className="mt-4">
               <span className={C.chip} style={{ background: `${id.trackColor}20`, color: id.trackHi }}>
-                Fokus: {selectedCause}
+                {t.focus}: {selectedCause}
               </span>
             </div>
           )}
@@ -1096,9 +1459,9 @@ const RecommendationScreen = ({ identity, investmentAmount, givingMode, selected
         <div className="rounded-2xl p-5 mb-6 border" style={{ background: 'rgba(16,32,39,.4)', borderColor: `${id.trackColor}30` }}>
           <div className="flex items-center gap-2 mb-3">
             <Shield size={16} style={{ color: id.trackHi }} />
-            <span style={{ color: DS.paper, fontWeight: 600, fontSize: 15 }}>Empfohlen: {product?.name}</span>
+            <span style={{ color: DS.paper, fontWeight: 600, fontSize: 15 }}>{t.recommendedLabel}: {t.philanthropyNames[id.recommendedProduct]}</span>
           </div>
-          <p style={{ color: `${DS.sand}80`, fontSize: 13, lineHeight: 1.7 }}>{id.forwardMessage}</p>
+          <p style={{ color: `${DS.sand}80`, fontSize: 13, lineHeight: 1.7 }}>{t.identityForward[identity]}</p>
         </div>
 
         {/* Share button */}
@@ -1106,7 +1469,7 @@ const RecommendationScreen = ({ identity, investmentAmount, givingMode, selected
           style={{ borderColor: `${id.trackColor}40`, color: id.trackHi }}
           onClick={handleShare}
           whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
-          {copied ? <><Check size={16} /> Kopiert!</> : <><Share2 size={16} /> Profil teilen</>}
+          {copied ? <><Check size={16} /> {t.copied}</> : <><Share2 size={16} /> {t.shareProfile}</>}
         </motion.button>
 
         {/* Business logic accordion */}
@@ -1115,7 +1478,7 @@ const RecommendationScreen = ({ identity, investmentAmount, givingMode, selected
           <button className="w-full text-left p-4 flex items-center justify-between cursor-pointer"
             style={{ background: 'transparent', border: 'none' }}
             onClick={() => setShowBusiness(!showBusiness)}>
-            <span style={{ color: `${DS.sand}80`, fontSize: 13, fontWeight: 600 }}>Wie LBBW profitiert</span>
+            <span style={{ color: `${DS.sand}80`, fontSize: 13, fontWeight: 600 }}>{t.howLBBW}</span>
             <motion.div animate={{ rotate: showBusiness ? 180 : 0 }}>
               <ChevronDown size={16} style={{ color: `${DS.sand}50` }} />
             </motion.div>
@@ -1128,12 +1491,8 @@ const RecommendationScreen = ({ identity, investmentAmount, givingMode, selected
                 className="overflow-hidden"
               >
                 <div className="px-4 pb-4" style={{ borderLeft: `2px solid ${id.trackColor}40`, marginLeft: 16 }}>
-                  <p style={{ color: `${DS.sand}99`, fontSize: 12, lineHeight: 2 }}>
-                    LBBW generiert Einnahmen durch transparente Verwaltungsgebühren: 0,6% p.a. auf verwaltetes Stiftungsvermögen.
-                    <br /><br />
-                    Stiftungsfonds €150.000 = €900 / Jahr Verwaltungsgebühr.
-                    <br /><br />
-                    Langfristig: Kunden, die heute mit €100k starten, verwalten in 10–15 Jahren oft €500k+. ImpactPath pflanzt den LBBW-Flag beim frühestmöglichen Zeitpunkt — und baut Markenloyalität in den formativen Jahren einer philanthropischen Identität.
+                  <p style={{ color: `${DS.sand}99`, fontSize: 12, lineHeight: 2, whiteSpace: 'pre-line' }}>
+                    {t.businessText}
                   </p>
                 </div>
               </motion.div>
@@ -1151,7 +1510,7 @@ const RecommendationScreen = ({ identity, investmentAmount, givingMode, selected
             style={{ background: id.trackColor, color: DS.ink }}
             onClick={onNext}
             whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
-            Zum Abschluss →
+            {t.toFinish}
           </motion.button>
         </div>
       </motion.div>
@@ -1164,6 +1523,7 @@ const RecommendationScreen = ({ identity, investmentAmount, givingMode, selected
 // ═══════════════════════════════════════════════════
 const CTAScreen = ({ identity, onNext }) => {
   const id = IDENTITY_DATA[identity]
+  const t = useT()
   const [countdown, setCountdown] = useState(10)
 
   useEffect(() => {
@@ -1196,7 +1556,7 @@ const CTAScreen = ({ identity, onNext }) => {
             fontSize: 'clamp(22px, 6vw, 32px)', color: DS.paper, lineHeight: 1.3,
             whiteSpace: 'pre-line',
           }}>
-            {id.closingStatement}
+            {t.identityClosing[identity]}
           </h2>
 
           <motion.div style={{ height: 1, background: `${DS.gold}40`, margin: '24px auto', maxWidth: 80 }}
@@ -1207,17 +1567,17 @@ const CTAScreen = ({ identity, onNext }) => {
           </p>
 
           <p className="mt-4" style={{ color: `${DS.sand}60`, fontSize: 13, lineHeight: 1.7 }}>
-            {id.forwardMessage}
+            {t.identityForward[identity]}
           </p>
 
           <div className="mt-6 text-xs" style={{ fontFamily: 'Fraunces, Georgia, serif', color: `${DS.gold}80` }}>
-            — LBBW / BW-Bank
+            {t.lbbwSignature}
           </div>
         </div>
 
         {/* Trust badges */}
         <div className="flex gap-3 mb-8 flex-wrap justify-center">
-          {['🏆 Platz 1 · 2025', '🏛️ 40 J. Erfahrung', '📊 1.500+ Stiftungen'].map(badge => (
+          {t.trustBadges.map(badge => (
             <span key={badge} className={C.chipGold}
               style={{ borderColor: `${DS.gold}30`, color: `${DS.sand}99`, fontSize: 11 }}>
               {badge}
@@ -1236,21 +1596,21 @@ const CTAScreen = ({ identity, onNext }) => {
             <text x="34" y="38" textAnchor="middle" fill={DS.paper} fontSize="18"
               fontFamily="Fraunces, Georgia, serif">{countdown}</text>
           </svg>
-          <span style={{ color: `${DS.sand}50`, fontSize: 11 }}>Dein Zeitfenster</span>
+          <span style={{ color: `${DS.sand}50`, fontSize: 11 }}>{t.yourWindow}</span>
         </div>
 
         <motion.button className={C.btnPrimary + ' mb-4'}
           style={{ background: id.trackColor, color: DS.ink }}
           onClick={() => window.location.href = '#beratung'}
           whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
-          Beratungsgespräch vereinbaren →
+          {t.bookConsultation}
         </motion.button>
 
         <motion.button className={C.btnGhost + ' mb-8'}
           style={{ borderColor: `${DS.sand}20`, color: `${DS.sand}80` }}
           onClick={onNext}
           whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
-          Dashboard-Vorschau ansehen →
+          {t.dashboardPreview}
         </motion.button>
 
         <div style={{ color: `${DS.sand}73`, fontSize: 11 }}>
@@ -1269,6 +1629,7 @@ const CTAScreen = ({ identity, onNext }) => {
 // ═══════════════════════════════════════════════════
 const DashboardRoadmapScreen = ({ identity, onBack }) => {
   const id = IDENTITY_DATA[identity]
+  const t = useT()
   const [phoneTab1, setPhoneTab1] = useState('dashboard')
   const [phoneTab2, setPhoneTab2] = useState('locked')
   const [fotwOpen, setFotwOpen] = useState(false)
@@ -1309,12 +1670,9 @@ const DashboardRoadmapScreen = ({ identity, onBack }) => {
     return () => clearTimeout(t)
   }, [phoneTab1])
 
-  const transactions = [
-    { name: 'Edeka Round-up', amount: '+€0,60', time: 'Heute, 14:23' },
-    { name: 'dm Round-up', amount: '+€0,35', time: 'Gestern' },
-    { name: 'Tankstelle', amount: '+€0,80', time: 'Mo, 09:15' },
-    { name: 'Bäckerei', amount: '+€0,12', time: 'So, 08:40' },
-  ]
+  const transactions = t.txNames.map((name, i) => ({
+    name, amount: ['+€0,60', '+€0,35', '+€0,80', '+€0,12'][i], time: t.txTimes[i],
+  }))
 
   return (
     <ScreenWrapper glows={[['teal', '-top-32 -left-32'], ['gold', '-bottom-32 -right-32'], ['purple', 'top-1/2 left-1/3']]}>
@@ -1326,10 +1684,10 @@ const DashboardRoadmapScreen = ({ identity, onBack }) => {
 
         <h2 style={{ fontFamily: 'Fraunces, Georgia, serif', fontWeight: 300, fontSize: 'clamp(28px, 8vw, 40px)', color: DS.paper, lineHeight: 1.15 }}
           className="mb-2">
-          Phase 2: Dein persönliches Impact-Dashboard
+          {t.phase10H}
         </h2>
         <p className="mb-12" style={{ color: `${DS.sand}99`, fontSize: 14, maxWidth: 520 }}>
-          So könnte deine Wirkung aussehen — in Echtzeit, direkt in der LBBW App.
+          {t.phase10Sub}
         </p>
 
         {/* PHONES */}
@@ -1338,7 +1696,7 @@ const DashboardRoadmapScreen = ({ identity, onBack }) => {
           <div className="relative">
             <div className="text-center mb-4">
               <span className={C.chip} style={{ background: `${DS.teal}20`, color: DS.tealhi, border: `1px solid ${DS.teal}40` }}>
-                Micro-Giver Track
+                {t.microGiverTrack}
               </span>
             </div>
             <PhoneFrame variant="light">
@@ -1351,7 +1709,7 @@ const DashboardRoadmapScreen = ({ identity, onBack }) => {
                     <div className="rounded-2xl p-4 mb-4 relative overflow-hidden"
                       style={{ background: DS.grad.tealFull }}>
                       <div style={{ position: 'absolute', right: -20, top: -20, width: 80, height: 80, borderRadius: '50%', background: `${DS.tealhi}25`, filter: 'blur(24px)' }} />
-                      <div style={{ fontSize: 10, color: `${DS.paper}b3`, letterSpacing: '.08em' }}>Gesammelter Betrag</div>
+                      <div style={{ fontSize: 10, color: `${DS.paper}b3`, letterSpacing: '.08em' }}>{t.collectedAmount}</div>
                       <div style={{ fontFamily: 'Fraunces, Georgia, serif', fontSize: 32, color: DS.paper, marginTop: 2 }}>€128,40</div>
                       <div className="mt-2 rounded-full px-2 py-0.5 inline-flex items-center gap-1"
                         style={{ background: `${DS.paper}20`, fontSize: 10, color: DS.paper }}>
@@ -1362,7 +1720,7 @@ const DashboardRoadmapScreen = ({ identity, onBack }) => {
                     {/* Round-up slider */}
                     <div className="mb-4 rounded-xl p-3" style={{ background: 'rgba(11,42,58,.08)' }}>
                       <div className="flex justify-between mb-2">
-                        <span style={{ fontSize: 11, color: '#0B2A3A', fontWeight: 600 }}>Round-up Betrag</span>
+                        <span style={{ fontSize: 11, color: '#0B2A3A', fontWeight: 600 }}>{t.roundupAmount}</span>
                         <span style={{ fontFamily: 'Fraunces, Georgia, serif', fontSize: 13, color: DS.teal }}>€0,60</span>
                       </div>
                       <input type="range" className="impact-range w-full" min="10" max="200" defaultValue="60"
@@ -1371,7 +1729,7 @@ const DashboardRoadmapScreen = ({ identity, onBack }) => {
 
                     {/* Transactions */}
                     <div style={{ fontSize: 10, fontWeight: 600, color: '#0B2A3A', letterSpacing: '.1em', marginBottom: 8 }}>
-                      LETZTE TRANSAKTIONEN
+                      {t.lastTransactions}
                     </div>
                     {transactions.map((tx, i) => (
                       <div key={i} className="flex items-center justify-between py-2"
@@ -1394,13 +1752,13 @@ const DashboardRoadmapScreen = ({ identity, onBack }) => {
                     <div className="rounded-2xl p-4 mb-4" style={{ background: DS.grad.goldFull }}>
                       <div className="flex items-center gap-2 mb-1">
                         <Award size={16} color={DS.paper} />
-                        <span style={{ fontFamily: 'Fraunces, Georgia, serif', fontSize: 14, color: DS.paper }}>€100 Meilenstein erreicht!</span>
+                        <span style={{ fontFamily: 'Fraunces, Georgia, serif', fontSize: 14, color: DS.paper }}>{t.milestoneReached}</span>
                       </div>
-                      <div style={{ fontSize: 10, color: `${DS.paper}b3` }}>Du hast dein erstes Ziel geschafft.</div>
+                      <div style={{ fontSize: 10, color: `${DS.paper}b3` }}>{t.milestoneDesc}</div>
                     </div>
 
                     {/* Progress bars */}
-                    {[['€250 Spendenziel', 72], ['Erstes Projekt unterstützt', 45], ['Community Beitritt', 18]].map(([label, pct], i) => (
+                    {[[t.donationGoal, 72], [t.firstProject, 45], [t.communityJoin, 18]].map(([label, pct], i) => (
                       <div key={label} className="mb-4">
                         <div className="flex justify-between mb-1">
                           <span style={{ fontSize: 11, color: '#0B2A3A', fontWeight: 500 }}>{label}</span>
@@ -1430,7 +1788,7 @@ const DashboardRoadmapScreen = ({ identity, onBack }) => {
           <div className="relative">
             <div className="text-center mb-4">
               <span className={C.chip} style={{ background: `${DS.gold}20`, color: DS.goldhi, border: `1px solid ${DS.gold}40` }}>
-                Founder Track
+                {t.founderTrack}
               </span>
             </div>
             <PhoneFrame variant="dark">
@@ -1443,10 +1801,10 @@ const DashboardRoadmapScreen = ({ identity, onBack }) => {
                     <div style={{ fontFamily: 'Fraunces, Georgia, serif', fontSize: 56, fontWeight: 300, color: DS.paper, marginBottom: 4 }}>
                       20:14
                     </div>
-                    <div style={{ color: `${DS.sand}50`, fontSize: 12, marginBottom: 40 }}>Freitag, 27. Juni</div>
+                    <div style={{ color: `${DS.sand}50`, fontSize: 12, marginBottom: 40 }}>{t.friday}</div>
                     <PushNotification
-                      title={`${id.nameDE} Fund — Bau-Phase 2 gestartet 🏗️`}
-                      cta="Tippe zum Verfolgen"
+                      title={t.fundStarted(t.identityNameDE[identity])}
+                      cta={t.tapToFollow}
                       accentColor={DS.gold}
                       onTap={() => setPhoneTab2('tracker')}
                     />
@@ -1460,7 +1818,7 @@ const DashboardRoadmapScreen = ({ identity, onBack }) => {
                       MAX MÜLLER IMPACT FUND
                     </div>
                     <div style={{ fontFamily: 'Fraunces, Georgia, serif', fontSize: 18, color: DS.paper, marginBottom: 8 }}>
-                      Regionale Wasserinitiative
+                      {t.regionalWater}
                     </div>
 
                     <PhoneSVGScene />
@@ -1476,7 +1834,7 @@ const DashboardRoadmapScreen = ({ identity, onBack }) => {
 
                     {/* Deploy counter */}
                     <div className="rounded-xl p-3 mb-4" style={{ background: 'rgba(176,141,87,.08)', border: `1px solid ${DS.gold}25` }}>
-                      <div style={{ fontSize: 10, color: `${DS.sand}70` }}>Eingesetzt</div>
+                      <div style={{ fontSize: 10, color: `${DS.sand}70` }}>{t.deployed}</div>
                       <div style={{ fontFamily: 'Fraunces, Georgia, serif', fontSize: 28, color: DS.paper }}>
                         €{formatEuro(deployCount)}
                       </div>
@@ -1488,10 +1846,10 @@ const DashboardRoadmapScreen = ({ identity, onBack }) => {
                     {/* Timeline */}
                     <div className="space-y-3">
                       {[
-                        { label: 'Phase 1: Planung', done: true },
-                        { label: 'Phase 2: Bau', active: true },
-                        { label: 'Phase 3: Test', upcoming: true },
-                        { label: 'Phase 4: Betrieb', upcoming: true },
+                        { label: t.planning, done: true },
+                        { label: t.building, active: true },
+                        { label: t.testing, upcoming: true },
+                        { label: t.operation, upcoming: true },
                       ].map((p, i) => (
                         <div key={i} className="flex items-center gap-3">
                           <div className="w-5 h-5 rounded-full grid place-items-center flex-shrink-0" style={{
@@ -1519,13 +1877,13 @@ const DashboardRoadmapScreen = ({ identity, onBack }) => {
                       whileTap={{ scale: 0.985 }}>
                       <div className="flex items-center gap-2 mb-2">
                         <Star size={14} color={DS.goldhi} />
-                        <span style={{ fontSize: 10, letterSpacing: '.15em', color: DS.goldhi, textTransform: 'uppercase' }}>Foundation of the Week</span>
+                        <span style={{ fontSize: 10, letterSpacing: '.15em', color: DS.goldhi, textTransform: 'uppercase' }}>{t.fotwTitle}</span>
                       </div>
                       <div style={{ fontFamily: 'Fraunces, Georgia, serif', fontSize: 14, color: DS.paper }}>
-                        Schneider Umweltstiftung
+                        {t.fotwName}
                       </div>
                       <div style={{ fontSize: 10, color: `${DS.sand}60`, marginTop: 4 }}>
-                        €2.4M · Regionale Biodiversität
+                        €2.4M · Regional Biodiversity
                       </div>
                       <AnimatePresence>
                         {fotwOpen && (
@@ -1533,11 +1891,11 @@ const DashboardRoadmapScreen = ({ identity, onBack }) => {
                             exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
                             <div className="mt-3 pt-3" style={{ borderTop: `1px solid ${DS.gold}20` }}>
                               <p style={{ fontSize: 10, color: `${DS.sand}80`, lineHeight: 1.6 }}>
-                                Die Schneider Stiftung fördert seit 2018 regionale Biodiversitätsprojekte. Exklusiv bei der LBBW Gala im Oktober vorgestellt.
+                                {t.fotwDesc}
                               </p>
                               <div className="mt-2 rounded-full px-3 py-1 inline-flex items-center gap-1"
                                 style={{ background: `${DS.gold}20`, fontSize: 9, color: DS.goldhi }}>
-                                <Calendar size={10} /> Zur LBBW Gala einladen
+                                <Calendar size={10} /> {t.fotwCTA}
                               </div>
                             </div>
                           </motion.div>
@@ -1546,10 +1904,7 @@ const DashboardRoadmapScreen = ({ identity, onBack }) => {
                     </motion.div>
 
                     {/* Feed items */}
-                    {[
-                      { user: 'A. Weber', action: 'hat Wasserinitiative unterstützt', time: 'Vor 2h' },
-                      { user: 'K. Schmidt', action: 'hat Bildungsfonds gegründet', time: 'Vor 1 Tag' },
-                    ].map((item, i) => (
+                    {t.feedItems.map((item, i) => (
                       <div key={i} className="flex items-start gap-3 py-3"
                         style={{ borderBottom: i === 0 ? '1px solid rgba(255,255,255,.04)' : 'none' }}>
                         <div className="w-7 h-7 rounded-full grid place-items-center flex-shrink-0"
@@ -1585,26 +1940,26 @@ const DashboardRoadmapScreen = ({ identity, onBack }) => {
           <div className="rounded-full px-4 py-2 flex items-center gap-2 mb-3"
             style={{ background: `${DS.teal}15`, border: `1px solid ${DS.teal}30` }}>
             <div className="w-2 h-2 rounded-full" style={{ background: DS.tealhi }} />
-            <span style={{ fontSize: 11, color: DS.tealhi }}>€0,60 / Monat</span>
+            <span style={{ fontSize: 11, color: DS.tealhi }}>€0,60 {t.perMonthShort}</span>
           </div>
           <div className={`w-0.5 h-16 thread-line ${threadActive ? 'active' : ''}`}
             style={{ background: DS.grad.tealGold }} />
           <div className="rounded-full px-4 py-2 flex items-center gap-2 mt-3"
             style={{ background: `${DS.gold}15`, border: `1px solid ${DS.gold}30` }}>
             <div className="w-2 h-2 rounded-full" style={{ background: DS.goldhi }} />
-            <span style={{ fontSize: 11, color: DS.goldhi }}>€100.000 / Fund</span>
+            <span style={{ fontSize: 11, color: DS.goldhi }}>€100.000 {t.perFund}</span>
           </div>
         </div>
 
         <p className="text-center mt-8 mb-8" style={{ fontFamily: 'Fraunces, Georgia, serif', fontStyle: 'italic', color: `${DS.sand}60`, fontSize: 12 }}>
-          Diese Features befinden sich in der gemeinsamen Entwicklung mit LBBW.
+          {t.devNote}
         </p>
 
         <div className="flex justify-center">
           <motion.button className={C.btnGhost} onClick={onBack}
             style={{ borderColor: `${DS.sand}30`, color: DS.sand }}
             whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
-            <ArrowLeft size={16} className="inline mr-2" /> Zurück
+            <ArrowLeft size={16} className="inline mr-2" /> {t.back}
           </motion.button>
         </div>
       </motion.div>
@@ -1623,6 +1978,7 @@ const App = () => {
   const [givingMode, setGivingMode] = useState('lumpsum')
   const [investmentAmount, setInvestmentAmount] = useState(100000)
   const [selectedCause, setSelectedCause] = useState(null)
+  const [lang, setLang] = useState('de')
 
   // Font injection
   useEffect(() => {
@@ -1711,74 +2067,77 @@ const App = () => {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: DS.ink }}>
-      <AnimatePresence mode="wait">
-        {currentStep === 0 && (
-          <motion.div key="splash" {...pageTransition}>
-            <SplashScreen onStart={goNext} />
-          </motion.div>
-        )}
-        {currentStep >= 1 && currentStep <= 3 && (
-          <motion.div key={`quiz-${currentStep}`} {...pageTransition}>
-            <QuizScreen
-              data={QUIZ_QUESTIONS[currentStep - 1]}
-              answer={quizAnswers[currentStep - 1]}
-              onAnswer={(id) => handleQuizAnswer(currentStep - 1, id)}
-              onNext={goNext}
-              onBack={goBack}
-              stepIndex={currentStep}
-            />
-          </motion.div>
-        )}
-        {currentStep === 4 && giverIdentity && (
-          <motion.div key="reveal" {...pageTransition}>
-            <IdentityRevealScreen identity={giverIdentity} onNext={goNext} />
-          </motion.div>
-        )}
-        {currentStep === 5 && giverIdentity && (
-          <motion.div key="projects" {...pageTransition}>
-            <ProjectDiscoveryScreen
-              followedProjects={followedProjects} setFollowedProjects={setFollowedProjects}
-              selectedCause={selectedCause} setSelectedCause={setSelectedCause}
-              onNext={goNext} onBack={goBack} identity={giverIdentity}
-            />
-          </motion.div>
-        )}
-        {currentStep === 6 && giverIdentity && (
-          <motion.div key="education" {...pageTransition}>
-            <EducationScreen identity={giverIdentity} onNext={goNext} onBack={goBack} />
-          </motion.div>
-        )}
-        {currentStep === 7 && giverIdentity && (
-          <motion.div key="calculator" {...pageTransition}>
-            <CalculatorScreen
-              identity={giverIdentity} investmentAmount={investmentAmount}
-              setInvestmentAmount={setInvestmentAmount} givingMode={givingMode}
-              setGivingMode={setGivingMode} onNext={goNext} onBack={goBack}
-            />
-          </motion.div>
-        )}
-        {currentStep === 8 && giverIdentity && (
-          <motion.div key="recommendation" {...pageTransition}>
-            <RecommendationScreen
-              identity={giverIdentity} investmentAmount={investmentAmount}
-              givingMode={givingMode} selectedCause={selectedCause}
-              followedProjects={followedProjects} onNext={goNext} onBack={goBack}
-            />
-          </motion.div>
-        )}
-        {currentStep === 9 && giverIdentity && (
-          <motion.div key="cta" {...pageTransition}>
-            <CTAScreen identity={giverIdentity} onNext={goNext} />
-          </motion.div>
-        )}
-        {currentStep === 10 && giverIdentity && (
-          <motion.div key="dashboard" {...pageTransition}>
-            <DashboardRoadmapScreen identity={giverIdentity} onBack={goBack} />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+    <LangContext.Provider value={lang}>
+      <div style={{ minHeight: '100vh', background: DS.ink }}>
+        <LangSwitch lang={lang} setLang={setLang} />
+        <AnimatePresence mode="wait">
+          {currentStep === 0 && (
+            <motion.div key="splash" {...pageTransition}>
+              <SplashScreen onStart={goNext} />
+            </motion.div>
+          )}
+          {currentStep >= 1 && currentStep <= 3 && (
+            <motion.div key={`quiz-${currentStep}`} {...pageTransition}>
+              <QuizScreen
+                data={QUIZ_QUESTIONS[currentStep - 1]}
+                answer={quizAnswers[currentStep - 1]}
+                onAnswer={(id) => handleQuizAnswer(currentStep - 1, id)}
+                onNext={goNext}
+                onBack={goBack}
+                stepIndex={currentStep}
+              />
+            </motion.div>
+          )}
+          {currentStep === 4 && giverIdentity && (
+            <motion.div key="reveal" {...pageTransition}>
+              <IdentityRevealScreen identity={giverIdentity} onNext={goNext} />
+            </motion.div>
+          )}
+          {currentStep === 5 && giverIdentity && (
+            <motion.div key="projects" {...pageTransition}>
+              <ProjectDiscoveryScreen
+                followedProjects={followedProjects} setFollowedProjects={setFollowedProjects}
+                selectedCause={selectedCause} setSelectedCause={setSelectedCause}
+                onNext={goNext} onBack={goBack} identity={giverIdentity}
+              />
+            </motion.div>
+          )}
+          {currentStep === 6 && giverIdentity && (
+            <motion.div key="education" {...pageTransition}>
+              <EducationScreen identity={giverIdentity} onNext={goNext} onBack={goBack} />
+            </motion.div>
+          )}
+          {currentStep === 7 && giverIdentity && (
+            <motion.div key="calculator" {...pageTransition}>
+              <CalculatorScreen
+                identity={giverIdentity} investmentAmount={investmentAmount}
+                setInvestmentAmount={setInvestmentAmount} givingMode={givingMode}
+                setGivingMode={setGivingMode} onNext={goNext} onBack={goBack}
+              />
+            </motion.div>
+          )}
+          {currentStep === 8 && giverIdentity && (
+            <motion.div key="recommendation" {...pageTransition}>
+              <RecommendationScreen
+                identity={giverIdentity} investmentAmount={investmentAmount}
+                givingMode={givingMode} selectedCause={selectedCause}
+                followedProjects={followedProjects} onNext={goNext} onBack={goBack}
+              />
+            </motion.div>
+          )}
+          {currentStep === 9 && giverIdentity && (
+            <motion.div key="cta" {...pageTransition}>
+              <CTAScreen identity={giverIdentity} onNext={goNext} />
+            </motion.div>
+          )}
+          {currentStep === 10 && giverIdentity && (
+            <motion.div key="dashboard" {...pageTransition}>
+              <DashboardRoadmapScreen identity={giverIdentity} onBack={goBack} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </LangContext.Provider>
   )
 }
 
