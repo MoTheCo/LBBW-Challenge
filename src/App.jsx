@@ -335,7 +335,7 @@ const T = {
       visionary: 'A legally independent foundation in your name. LBBW accompanies you from founding to ongoing operations.',
     },
     identityNameDE: { catalyst: 'The Micro-Contributor', builder: 'The Major Contributor', visionary: 'The Visionary' },
-    philanthropyNames: { fonds: 'Impact Ecosystem (Micro)', treuhand_classic: 'Impact Ecosystem (Major)', legal: 'Legal Foundation' },
+    philanthropyNames: { fonds: 'Impact Ecosystem (Micro)', treuhand_classic: 'Impact Ecosystem (Major)', legal: 'Independent Legacy Entity' },
     philanthropySubtitles: { fonds: 'From €0.60/day', treuhand_classic: 'From €100,000', legal: 'From €500,000' },
     philanthropyBenefits: {
       fonds: [
