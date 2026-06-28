@@ -1142,7 +1142,7 @@ const ProjectDiscoveryScreen = ({ followedProjects, setFollowedProjects, selecte
             style={{ background: id.trackColor, color: DS.ink }}
             onClick={onNext}
             whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
-            Weiter →
+            {t.next} →
           </motion.button>
         </div>
       </motion.div>
