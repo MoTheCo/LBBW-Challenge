@@ -1646,7 +1646,7 @@ const DashboardRoadmapScreen = ({ identity, onBack }) => {
   // Deployment counter animation
   useEffect(() => {
     if (phoneTab2 !== 'tracker') return
-    const target = 50000
+    const target = 240000
     const duration = 1400
     const start = performance.now()
     const animate = (now) => {
@@ -1815,7 +1815,7 @@ const DashboardRoadmapScreen = ({ identity, onBack }) => {
                   <motion.div key="track" className="p-4 screen-in"
                     initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}>
                     <div style={{ fontSize: 9, letterSpacing: '.25em', color: `${DS.gold}cc`, textTransform: 'uppercase', marginBottom: 4 }}>
-                      MAX MÜLLER IMPACT FUND
+                      YOUR IMPACT ECOSYSTEM
                     </div>
                     <div style={{ fontFamily: 'Fraunces, Georgia, serif', fontSize: 18, color: DS.paper, marginBottom: 8 }}>
                       {t.regionalWater}
@@ -1829,7 +1829,7 @@ const DashboardRoadmapScreen = ({ identity, onBack }) => {
                         <span className="w-1.5 h-1.5 rounded-full pulse-dot" style={{ background: '#f87171' }} />
                         LIVE
                       </span>
-                      <span style={{ fontSize: 10, color: `${DS.sand}60` }}>Standort B</span>
+                      <span style={{ fontSize: 10, color: `${DS.sand}60` }}>Site B</span>
                     </div>
 
                     {/* Deploy counter */}
@@ -1839,7 +1839,7 @@ const DashboardRoadmapScreen = ({ identity, onBack }) => {
                         €{formatEuro(deployCount)}
                       </div>
                       <div className="h-1.5 rounded-full mt-2" style={{ background: 'rgba(255,255,255,.08)' }}>
-                        <div className="bar-fill h-full rounded-full" style={{ background: DS.grad.goldFull, width: `${(deployCount / 50000) * 100}%`, transition: 'none' }} />
+                        <div className="bar-fill h-full rounded-full" style={{ background: DS.grad.goldFull, width: `${(deployCount / 500000) * 100}%`, transition: 'none' }} />
                       </div>
                     </div>
 
