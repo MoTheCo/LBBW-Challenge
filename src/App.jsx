@@ -1883,7 +1883,7 @@ const DashboardRoadmapScreen = ({ identity, onBack }) => {
                         {t.fotwName}
                       </div>
                       <div style={{ fontSize: 10, color: `${DS.sand}60`, marginTop: 4 }}>
-                        €2.4M · Regional Biodiversity
+                        In the Circle since 2021 · Education access · €250k committed
                       </div>
                       <AnimatePresence>
                         {fotwOpen && (
@@ -1925,7 +1925,7 @@ const DashboardRoadmapScreen = ({ identity, onBack }) => {
               {phoneTab2 !== 'locked' && (
                 <PhoneNavBar variant="dark"
                   tabs={[
-                    { id: 'tracker', label: 'My Fund', icon: <Layers size={18} /> },
+                    { id: 'tracker', label: 'My Impact', icon: <Layers size={18} /> },
                     { id: 'network', label: 'Network', icon: <Users size={18} /> },
                   ]}
                   activeTab={phoneTab2} onTabChange={setPhoneTab2}
@@ -1940,14 +1940,14 @@ const DashboardRoadmapScreen = ({ identity, onBack }) => {
           <div className="rounded-full px-4 py-2 flex items-center gap-2 mb-3"
             style={{ background: `${DS.teal}15`, border: `1px solid ${DS.teal}30` }}>
             <div className="w-2 h-2 rounded-full" style={{ background: DS.tealhi }} />
-            <span style={{ fontSize: 11, color: DS.tealhi }}>€0,60 {t.perMonthShort}</span>
+            <span style={{ fontSize: 11, color: DS.tealhi }}>€0.60 {t.perMonthShort}</span>
           </div>
           <div className={`w-0.5 h-16 thread-line ${threadActive ? 'active' : ''}`}
             style={{ background: DS.grad.tealGold }} />
           <div className="rounded-full px-4 py-2 flex items-center gap-2 mt-3"
             style={{ background: `${DS.gold}15`, border: `1px solid ${DS.gold}30` }}>
             <div className="w-2 h-2 rounded-full" style={{ background: DS.goldhi }} />
-            <span style={{ fontSize: 11, color: DS.goldhi }}>€100.000 {t.perFund}</span>
+            <span style={{ fontSize: 11, color: DS.goldhi }}>€100k {t.perFund}</span>
           </div>
         </div>
 
